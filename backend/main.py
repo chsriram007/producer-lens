@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from backend.core.distillation import distill_story
+from backend.services.ai_engine import AIEngine
+ai_engine = AIEngine()
 
 
 app = FastAPI(title="Producer Lens")
@@ -18,10 +20,12 @@ def health_check():
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest):
     distilled = distill_story(request.text)
+    enhanced = ai_engine.enhance_story(distilled)
 
     return {
         "product": "Producer Lens",
         "stage": "story_distillation",
-        "output": distilled
+        "output": enhanced
     }
+
 
